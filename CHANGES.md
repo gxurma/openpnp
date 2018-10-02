@@ -1,6 +1,19 @@
 This file lists major or notable changes to OpenPnP in chronological order. This is not
 a complete change list, only those that may directly interest or affect users.
 
+Breaking Change
+    * Nozzle.invertVacuumSenseLogic removed
+    * vacuumLevel is now normalized to 0-1. But do people actually care?
+    		* Maybe not? Because all we really care about is isPartOn()
+    		* Actually, that brings up the question: Do we even need to expose vacuum level? Isn't
+    		  it just "isPartOn()"? Then you can lasers or vacuum or whatever?
+    		* Replacing the invert logic with a range is really the only reason for it.
+    		* One more thought: Putting the range on the tip would allow it to be normalized
+    		  per tip. But then, again, why not just a boolean on /off? Maybe some parts leak more?
+		  But then it needs to be part specific.
+    
+
+
 # 2018-09-26
 
 * Connection Keep Alive

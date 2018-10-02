@@ -545,6 +545,25 @@ public class ReferencePnpJobProcessor extends AbstractPnpJobProcessor {
      * https://imgur.com/a/63Y1t
      */
     protected void doFeedAndPick() throws Exception {
+//        Actuator actuator = getHead().getActuatorByName(vacuumSenseActuatorName);
+//        if (actuator != null) {
+//            ReferenceNozzleTip nt = getNozzleTip();
+//            double vacuumLevel = Double.parseDouble(actuator.read());
+//            if (invertVacuumSenseLogic) {
+//                if (vacuumLevel > nt.getVacuumLevelPartOn()) {
+//                    throw new Exception(String.format(
+//                            "Pick failure: Vacuum level %f is higher than expected value of %f for part on. Part may have failed to pick.",
+//                            vacuumLevel, nt.getVacuumLevelPartOn()));
+//                }
+//            }
+//            else {
+//                if (vacuumLevel < nt.getVacuumLevelPartOn()) {
+//                    throw new Exception(String.format(
+//                            "Pick failure: Vacuum level %f is lower than expected value of %f for part on. Part may have failed to pick.",
+//                            vacuumLevel, nt.getVacuumLevelPartOn()));
+//                }
+//            }
+//        }
         for (PlannedPlacement plannedPlacement : plannedPlacements) {
             if (plannedPlacement.stepComplete) {
                 continue;
@@ -675,6 +694,25 @@ public class ReferencePnpJobProcessor extends AbstractPnpJobProcessor {
     }
 
     protected void doPlace() throws Exception {
+//        Actuator actuator = getHead().getActuatorByName(vacuumSenseActuatorName);
+//        if (actuator != null) {
+//            ReferenceNozzleTip nt = getNozzleTip();
+//            double vacuumLevel = Double.parseDouble(actuator.read());
+//            if (invertVacuumSenseLogic) {
+//                if (vacuumLevel < nt.getVacuumLevelPartOff()) {
+//                    throw new Exception(String.format(
+//                            "Place failure: Vacuum level %f is lower than expected value of %f for part off. Part may be stuck to nozzle.",
+//                            vacuumLevel, nt.getVacuumLevelPartOff()));
+//                }
+//            }
+//            else {
+//                if (vacuumLevel > nt.getVacuumLevelPartOff()) {
+//                    throw new Exception(String.format(
+//                            "Place failure: Vacuum level %f is higher than expected value of %f for part off. Part may be stuck to nozzle.",
+//                            vacuumLevel, nt.getVacuumLevelPartOff()));
+//                }
+//            }
+//        }
         for (PlannedPlacement plannedPlacement : plannedPlacements) {
             if (plannedPlacement.stepComplete) {
                 continue;

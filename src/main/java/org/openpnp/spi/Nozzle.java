@@ -84,4 +84,11 @@ public interface Nozzle
     public void addNozzleTip(NozzleTip nozzleTip) throws Exception;
     
     public void removeNozzleTip(NozzleTip nozzleTip);
+    
+    /**
+     * Returns the current vacuum level as a absolute value between 0 and 1. 0 represents
+     * no vacuum and 1 represents the maximum vacuum level the system can generate.
+     * @return
+     */
+    public double getVacuumLevel() throws Exception;
 }
