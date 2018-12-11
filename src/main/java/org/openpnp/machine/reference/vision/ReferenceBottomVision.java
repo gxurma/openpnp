@@ -89,12 +89,8 @@ public class ReferenceBottomVision implements PartAlignment {
         angle = angleNorm(angle, 180.);
         double placementAngle = angle;
         Location location = camera.getLocation()
-                                  .add(new Location(part.getHeight()
-                                                        .getUnits(),
-                                          0.0, 0.0, part.getHeight()
-                                                        .getValue(),
-                                          0.0))
-                                  .derive(null, null, null, angle);
+              .add(new Location(part.getHeight().getUnits(), 0.0, 0.0, part.getHeight().getValue(), 0.0))
+              .derive(null, null, null, angle);
         MovableUtils.moveToLocationAtSafeZ(nozzle, location);
 
         try (CvPipeline pipeline = partSettings.getPipeline()) {
@@ -128,7 +124,9 @@ public class ReferenceBottomVision implements PartAlignment {
 
             Logger.debug("Result rect {}", rect);
             Location offsets = VisionUtils.getPixelCenterOffsets(camera, rect.center.x, rect.center.y)
-                                          .derive(null, null, null, Double.NaN);
+                                          .derive(null, null, null, Double.NaN); // This NaN is poison.
+            // It means to move the nozzle to the placement without rotating but it should just return
+            // the angle since other stuff might happen here. This is cause of the shared C bug, I think.
 
             Logger.debug("Final offsets {}", offsets);
             displayResult(pipeline, part, offsets, camera);

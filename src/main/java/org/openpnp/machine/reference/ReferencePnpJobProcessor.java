@@ -682,19 +682,15 @@ public class ReferencePnpJobProcessor extends AbstractPnpJobProcessor {
 
             PartAlignment partAlignment = findPartAligner(machine, part);
 
-            if(partAlignment!=null) {
+            if (partAlignment != null) {
                 plannedPlacement.alignmentOffsets = VisionUtils.findPartAlignmentOffsets(
-                        partAlignment,
-                        part,
-                        boardLocation,
-                        placement.getLocation(), nozzle);
+                        partAlignment, part, boardLocation, placement.getLocation(), nozzle);
                 Logger.debug("Align {} with {}", part, nozzle);
                 Logger.debug("Offsets {}", plannedPlacement.alignmentOffsets);
             }
-            else
-            {
-                plannedPlacement.alignmentOffsets=null;
-                Logger.debug("Not aligning {} as no compatible enabled aligners defined",part);
+            else {
+                plannedPlacement.alignmentOffsets = null;
+                Logger.debug("Not aligning {} as no compatible enabled aligners defined", part);
             }
 
             plannedPlacement.stepComplete = true;
@@ -723,6 +719,40 @@ public class ReferencePnpJobProcessor extends AbstractPnpJobProcessor {
                     Utils2D.calculateFiducialCompensatedBoardPlacementLocation(boardLocation, placement.getLocation());
 
             // If there are alignment offsets update the placement location with them
+            /**
+             * There are three known systems in use:
+             * 
+             * 1. Standard Bottom Vision:
+             *    Standard Bottom Vision calculates the XYC offset from 0 and returns those
+             *    offsets. The place code then applies the XYC offset before placing the part.
+             *    
+             * 2. Pre-Rotate Bottom Vision:
+             *    Pre-Rotate Bottom Vision determines the final placement angle, including the
+             *    C error. It rotates the nozzle to this angle and then returns an XY offset with C 
+             *    set to NaN. The XY offset is applied during place, but since C is set NaN, the 
+             *    nozzle does not rotate from where the bottom vision put it, so it is placed at
+             *    this same angle.
+             *    
+             * 3. Mechanical Rotator:
+             * 
+             *    Mechanical Rotator is a rotatable table with jaws that center the part. The
+             *    table rotates to the final placement angle and then the jaws grip the part,
+             *    centering it on the nozzle at the final rotation. It then returns an XYC offset
+             *    of 0,0,0. The place code applies the offset, but it doesn't change anything,
+             *    so the part places at an XY offset of 0,0 and the part pre-rotated on the
+             *    nozzle, with the nozzle still at 0.
+             *    
+             *    
+             * I think these can all be consolidated by just returning a Location offset which is
+             * always just added to the placement location.
+             * * Mechanical Rotator will return offsets of 0,0,C where C is inverse of the final
+             *   placement angle. The caller will add the offsets, canceling out the angle so that
+             *   it does not rotate. 
+             * * Pre-Rotate Bottom Vision will return offsets of X,Y,C where C is inverse of the
+             *   final placement angle. The caller will add the offsets, canceling out the angle so
+             *   that it does not rotate.
+             * * Standard Bottom Vision returns it's normal offset, which gets added on.
+             */
             if (plannedPlacement.alignmentOffsets != null) {
 
                 /*

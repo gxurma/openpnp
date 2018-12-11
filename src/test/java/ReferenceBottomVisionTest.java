@@ -42,14 +42,22 @@ public class ReferenceBottomVisionTest {
         SimulatedUpCamera camera = (SimulatedUpCamera) VisionUtils.getBottomVisionCamera();
         Part part = Configuration.get().getPart("R0805-1K"); 
         ReferenceBottomVision bottomVision = (ReferenceBottomVision) machine.getPartAlignments().get(0);
+        bottomVision.setPreRotate(true);
         NullDriver driver = (NullDriver) ((ReferenceMachine) machine).getDriver();
         driver.setFeedRateMmPerMinute(0);
         
         camera.setErrorOffsets(error);
         machine.setEnabled(true);
         nozzle.pick(part);
+        // Need to add board, boardLocation, placementLocation to test pre-rotate.
+        // And need to test pre-rotate (and post rotate and probably mechanical)
+        // before making this change, so we know it works. As the issue says, I think:
+        // https://github.com/openpnp/openpnp/issues/599
+//        BoardLocation boardLocation = new BoardLocation();
+//        Location placementLocation = 
         PartAlignmentOffset offset = bottomVision.findOffsets(part, null, null, nozzle);
         Location offsets = offset.getLocation();
+        System.out.println("offsets = " + offsets);
         assertMaxDelta(offsets.getX(), error.getX(), maxError.getX());
         assertMaxDelta(offsets.getY(), error.getY(), maxError.getY());
         assertMaxDelta(offsets.getRotation(), error.getRotation(), maxError.getRotation());
